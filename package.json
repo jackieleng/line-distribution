@@ -1,0 +1,15 @@
+{
+  "name": "linedistribution",
+  "version": "1.0.0",
+  "main": "app.js",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-json": "^2.0.2",
+    "koa-logger": "^3.0.0",
+    "koa-route": "^3.2.0",
+    "mongoose": "^4.10.2"
+  },
+  "devDependencies": {}
+}

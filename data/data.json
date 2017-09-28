@@ -1,0 +1,37 @@
+[
+    {
+        "_id": "595811ff27daf41a68831c9e",
+        "artists": [
+            {
+                "_id": "59580f1e27daf41a68831c9c",
+                "name": "Blackpink",
+                "__v": 0
+            }
+        ],
+        "title": "As If It's Your Last",
+        "__v": 0,
+        "lineDistributions": [
+            {
+                "source": "internet",
+                "distribution": [
+                    {
+                        "member": "Jennie",
+                        "percentage": 25
+                    },
+                    {
+                        "member": "Jisoo",
+                        "percentage": 25
+                    },
+                    {
+                        "member": "Lisa",
+                        "percentage": 25
+                    },
+                    {
+                        "member": "Rose",
+                        "percentage": 25
+                    }
+                ]
+            }
+        ]
+    }
+]
