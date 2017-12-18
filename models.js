@@ -14,15 +14,14 @@ var linePercentageSchema = Schema({
 // Line distribution for all members
 var lineDistributionSchema = Schema({
   source: String,
-  distribution: [linePercentageSchema]
+  distribution: [linePercentageSchema],
+  song: {type: Schema.Types.ObjectId, ref: 'Song'}
 });
 
 var songSchema = Schema({
   title: {type: String, required: true},
   artists: [{type: Schema.Types.ObjectId, ref: 'Artist'}],
-  duration_ms: Number,
-  //linedistributions: {type: Array, default: []}
-  lineDistributions: [lineDistributionSchema]
+  duration_ms: Number
 });
 
 var artistSchema = Schema({
@@ -33,11 +32,11 @@ var artistSchema = Schema({
 
 module.exports = {
   Artist: mongoose.model('Artist', artistSchema),
-  Song: mongoose.model('Song', songSchema)
+  Song: mongoose.model('Song', songSchema),
 
   // Unsure if necessary. We could just make an endpoint
   // songs/<songid>/linedistributions on which we can implement `list` and
   // `create` methods. A api/linedistributions endpoint would then not be very
   // necessary.
-  //LineDistribution: mongoose.model('LineDistribution', lineDistributionSchema)
+  LineDistribution: mongoose.model('LineDistribution', lineDistributionSchema)
 }

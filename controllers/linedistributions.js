@@ -1,22 +1,13 @@
 'use strict';
-var fetchSong = require('./songs').fetchSong
+var LineDistribution = require('../models').LineDistribution
 
 module.exports = {
-  all: async function(ctx, songid) {
-    const song = await fetchSong(ctx, songid);
-    ctx.body = song.lineDistributions;
+  all: async function(ctx) {
+    ctx.body = await LineDistribution.find({});
   },
 
-  fetch: async function(ctx, songid, ldid) {
-    // TODO: you only need to fetch the ldid from linedists
-    const song = await fetchSong(ctx, songid);
-    const dists = song.lineDistributions.filter(function(x) {
-      return x._id === ldid;
-    });
-    if (dists.length === 0) {
-      ctx.throw(404);
-    }
-    ctx.body = dists[0];  // TODO: needs proper error handling
+  fetch: async function(ctx, ldid) {
+    ctx.body = await LineDistribution.findOne({_id: ldid});
   },
 
   add: async function(ctx, songid) {

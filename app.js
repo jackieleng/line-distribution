@@ -1,15 +1,11 @@
 'use strict';
 
 const Koa = require('koa');
-const route = require('koa-route');
 const logger = require('koa-logger');
 const json = require('koa-json')
 const bodyParser = require('koa-bodyparser');
 const db = require('./db');  // This connects to mongodb
-const songs = require('./controllers/songs');
-const artists = require('./controllers/artists');
-const linedistributions = require('./controllers/linedistributions');
-//var linedists = require('./linedists');
+const router = require('./routes').router;
 
 const app = new Koa();
 
@@ -35,30 +31,11 @@ app.use(bodyParser());
 
 app.use(json({pretty: false, param: 'pretty', spaces: 2}));
 
-// routes  # TODO: use koa-router
+// add routes
 
-app.use(route.get('/', index));
-app.use(route.post('/', index));
-app.use(route.get('/artists/', artists.all));
-app.use(route.get('/artists/:artistid', artists.fetch));
-
-app.use(route.get('/songs/', songs.all));
-app.use(route.get('/songs/:songid', songs.fetch));
-app.use(route.post('/songs/', songs.add));
-app.use(route.put('/songs/:songid', songs.update));
-//app.use(route.patch('/songs/:id', songs.modify));
-app.use(route.delete('/songs/:songid', songs.remove));
-
-//app.use(route.get('/linedists/', linedists.all));
-app.use(route.get('/songs/:songid/linedistributions', linedistributions.all));
-app.use(route.get('/songs/:songid/linedistributions/:ldid', linedistributions.fetch));
-app.use(route.post('/songs/:songid/linedistributions', linedistributions.add));
-
-// response
-
-function index(ctx) {
-  ctx.body = 'Home';
-};
+app
+  .use(router.routes())
+  .use(router.allowedMethods());
 
 app.listen(3000);
 
