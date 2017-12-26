@@ -10,7 +10,7 @@ var Song = models.Song;
 async function fetchSong(ctx, songid) {
   let res;
   try {
-    res = await Song.findOne({_id: songid}).populate('artists');
+    res = await Song.findById(songid).populate('artists');
   } catch (err) {
     console.log(err.message);
     ctx.throw(404, "Song not found.");
@@ -28,8 +28,8 @@ module.exports = {
     ctx.body = await Song.find({}).populate('artists');
   },
 
-  fetch: async function(ctx, songid) {
-    ctx.body = await fetchSong(ctx, songid);
+  fetch: async function(ctx) {
+    ctx.body = await fetchSong(ctx, ctx.params.id);
   },
 
   // TODO: fix this function
@@ -42,9 +42,9 @@ module.exports = {
     ctx.body = song;
   },
 
-  update: async function(songid) {
+  update: async function(ctx) {
   },
 
-  remove: async function(songid) {
+  remove: async function(ctx) {
   }
 }

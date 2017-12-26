@@ -17,18 +17,22 @@ router
   .get('/', index)
 
   .get('/artists', artists.all)
-  .get('/artists/:artistid', artists.fetch)
+  .get('/artists/:id', artists.fetch)
+  .post('/artists', artists.add)
+  .delete('/artists/:id', artists.remove)
 
   .get('/songs', songs.all)
-  .get('/songs/:songid', songs.fetch)
+  .get('/songs/:id', songs.fetch)
   .post('/songs', songs.add)
-  .put('/songs/:songid', songs.update)
+  .put('/songs/:id', songs.update)
 //.patch('/songs/:id', songs.modify)
-  .delete('/songs/:songid', songs.remove)
+  .delete('/songs/:id', songs.remove)
 
-//.get('/linedists/', linedists.all)
   .get('/linedistributions', linedistributions.all)
-  .get('/linedistributions/:ldid', linedistributions.fetch)
-  .post('/linedistributions', linedistributions.add);
+  .get('/linedistributions/:id', linedistributions.fetch)
+  .post('/linedistributions', linedistributions.add)
+
+  .get('/linedistributionsByArtist/:artistid', linedistributions.byArtist)
+;
 
 module.exports.router = router;
