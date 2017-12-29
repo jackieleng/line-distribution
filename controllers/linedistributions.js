@@ -13,8 +13,7 @@ module.exports = {
 
     // Fixup the fact that we can't populate refs in refs (artists in this case)
     lines.forEach(function(line) {
-      //motherfucker, TODO: why can't you compare ObjectIds withouth casting to string?
-      let song = songs.find(song => ''+song._id === ''+line.song._id);
+      let song = songs.find(song => song._id.equals(line.song._id));
       line.song.artists = song.artists;
     });
     ctx.body = lines;
