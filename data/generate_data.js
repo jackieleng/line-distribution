@@ -21,6 +21,10 @@ const songs = {
     title: "As If It's Your Last",
     artists: artists.blackpink,
   }),
+  pwf: new models.Song({
+    title: "Playing With Fire",
+    artists: artists.blackpink,
+  }),
   tt: new models.Song({
     title: "TT",
     artists: artists.twice,
@@ -40,6 +44,16 @@ const lines = [
       { member: "Jisoo", percentage: 25 },
       { member: "Lisa", percentage: 25 },
       { member: "Rose", percentage: 25 }
+    ],
+  }),
+  new models.LineDistribution({
+    song: songs.pwf,
+    source: "Internet",
+    distribution: [
+      { member: "Jennie", percentage: 25 },
+      { member: "Jisoo", percentage: 15 },
+      { member: "Lisa", percentage: 40 },
+      { member: "Rose", percentage: 20 }
     ],
   }),
   new models.LineDistribution({
