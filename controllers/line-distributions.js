@@ -2,6 +2,28 @@
 var LineDistribution = require('../models').LineDistribution
 var Song = require('../models').Song
 
+/*
+ * Sum line distributions percentages by member.
+ */
+function sumLineDistributions(lines) {
+  let sumDistribs = {};
+  // TODO: better to use Array.prototype.reduce
+  // or use the agg methods from mongodb?
+  lines.forEach(function(line) {
+    line.distribution.forEach(function(elm) {
+      if (sumDistribs[elm.member] === undefined) {
+        sumDistribs[elm.member] = {};
+        sumDistribs[elm.member].count = 1;
+        sumDistribs[elm.member].sumPercentage = elm.percentage;
+      } else {
+        sumDistribs[elm.member].count++;
+        sumDistribs[elm.member].sumPercentage += elm.percentage;
+      }
+    });
+  });
+  return sumDistribs;
+}
+
 module.exports = {
   all: async function(ctx) {
     ctx.body = await LineDistribution.find({}).populate('song');
@@ -21,22 +43,8 @@ module.exports = {
     switch(stats) {
       case 'sum':
       case 'avg':
-        let sumDistribs = {};
+        let sumDistribs = sumLineDistributions(lines);
 
-        // TODO: better to use Array.prototype.reduce
-        // or use the agg methods from mongodb?
-        lines.forEach(function(line) {
-          line.distribution.forEach(function(elm) {
-            if (sumDistribs[elm.member] === undefined) {
-              sumDistribs[elm.member] = {};
-              sumDistribs[elm.member].count = 1;
-              sumDistribs[elm.member].sumPercentage = elm.percentage;
-            } else {
-              sumDistribs[elm.member].count++;
-              sumDistribs[elm.member].sumPercentage += elm.percentage;
-            }
-          });
-        });
         if (stats === 'avg') {
           Object.entries(sumDistribs).forEach(function([k, v]) {
             v.averagePercentage = v.sumPercentage / v.count;
