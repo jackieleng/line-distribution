@@ -1,6 +1,7 @@
 'use strict';
-var LineDistribution = require('../models').LineDistribution
-var Song = require('../models').Song
+var models = require('../models');
+var LineDistribution = models.LineDistribution;
+var Song = models.Song;
 
 /*
  * Sum line distributions percentages by member.
