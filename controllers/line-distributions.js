@@ -14,15 +14,102 @@ function sumLineDistributions(lines) {
     line.distribution.forEach(function(elm) {
       if (sumDistribs[elm.member] === undefined) {
         sumDistribs[elm.member] = {};
-        sumDistribs[elm.member].count = 1;
-        sumDistribs[elm.member].sumPercentage = elm.percentage;
-      } else {
-        sumDistribs[elm.member].count++;
-        sumDistribs[elm.member].sumPercentage += elm.percentage;
+        sumDistribs[elm.member].count = 0;
+        sumDistribs[elm.member].sumPercentage = 0;
       }
+      sumDistribs[elm.member].count++;
+      sumDistribs[elm.member].sumPercentage += elm.percentage;
     });
   });
   return sumDistribs;
+}
+
+/*
+ * Max value of line distributions percentages by member.
+ */
+function maxLineDistributions(lines) {
+  let memberStats = {};
+  // TODO: better to use Array.prototype.reduce
+  // or use the agg methods from mongodb?
+  lines.forEach(function(line) {
+    line.distribution.forEach(function(elm) {
+      if (memberStats[elm.member] === undefined) {
+        memberStats[elm.member] = {};
+        memberStats[elm.member].count = 1;
+        memberStats[elm.member].maxPercentage = elm.percentage;
+      } else {
+        memberStats[elm.member].count++;
+        if (elm.percentage > memberStats[elm.member].maxPercentage) {
+          memberStats[elm.member].maxPercentage = elm.percentage;
+        }
+      }
+    });
+  });
+  return memberStats;
+}
+
+/*
+ * Min value of line distributions percentages by member.
+ */
+function minLineDistributions(lines) {
+  let memberStats = {};
+  // TODO: better to use Array.prototype.reduce
+  // or use the agg methods from mongodb?
+  lines.forEach(function(line) {
+    line.distribution.forEach(function(elm) {
+      if (memberStats[elm.member] === undefined) {
+        memberStats[elm.member] = {};
+        memberStats[elm.member].count = 1;
+        memberStats[elm.member].minPercentage = elm.percentage;
+      } else {
+        memberStats[elm.member].count++;
+        if (elm.percentage < memberStats[elm.member].minPercentage) {
+          memberStats[elm.member].minPercentage = elm.percentage;
+        }
+      }
+    });
+  });
+  return memberStats;
+}
+
+async function lineDistributionByArtist(artistId, stats) {
+  let songs = await Song.find({artists: artistId}).populate('artists');
+  let lines = await LineDistribution.find({song: {$in: songs}}).populate('song');
+
+  // Fixup the fact that we can't populate refs in refs (artists in this case)
+  lines.forEach(function(line) {
+    let song = songs.find(song => song._id.equals(line.song._id));
+    line.song.artists = song.artists;
+  });
+
+
+  let distrib;
+  switch(stats) {
+    case 'sum':
+      var sumDistribs = sumLineDistributions(lines);
+      distrib = sumDistribs;
+      break;
+    case 'avg':
+      var sumDistribs = sumLineDistributions(lines);
+      Object.entries(sumDistribs).forEach(function([k, v]) {
+        v.averagePercentage = v.sumPercentage / v.count;
+        delete v.sumPercentage;
+      });
+      distrib = sumDistribs;
+      break;
+    case 'max':
+      distrib = maxLineDistributions(lines);
+      break;
+    case 'min':
+      distrib = minLineDistributions(lines);
+      break;
+    case undefined:
+      distrib = lines;
+      break;
+    default:
+      break;
+  }
+  return distrib;
 }
 
 module.exports = {
@@ -30,42 +117,15 @@ module.exports = {
     ctx.body = await LineDistribution.find({}).populate('song');
   },
 
+  /*
+   * Fetch line distributions by `artistid`.
+   *
+   * This function also supports statistics using the `&stats=...` parameter.
+   */
   byArtist: async function(ctx) {
-    var songs = await Song.find({artists: ctx.params.artistid}).populate('artists');
-    let lines = await LineDistribution.find({song: {$in: songs}}).populate('song');
-
-    // Fixup the fact that we can't populate refs in refs (artists in this case)
-    lines.forEach(function(line) {
-      let song = songs.find(song => song._id.equals(line.song._id));
-      line.song.artists = song.artists;
-    });
-
+    let artistId = ctx.params.artistid;
     let stats = ctx.query.stats;
-    switch(stats) {
-      case 'sum':
-      case 'avg':
-        let sumDistribs = sumLineDistributions(lines);
-
-        if (stats === 'avg') {
-          Object.entries(sumDistribs).forEach(function([k, v]) {
-            v.averagePercentage = v.sumPercentage / v.count;
-            delete v.sumPercentage;
-          });
-          ctx.body = sumDistribs;
-        } else {
-          ctx.body = sumDistribs;
-        }
-        break;
-      case 'max':
-        // TODO: take the max of all members, i.e.
-        // just like avg/sum, but the max over all line dists
-      case undefined:
-        ctx.body = lines;
-        break;
-      default:
-        break;
-    }
-    // ctx.body = await LineDistribution.find({"song.artists": ctx.params.artistid});
+    ctx.body = await lineDistributionByArtist(artistId, stats);
   },
 
   fetch: async function(ctx) {
