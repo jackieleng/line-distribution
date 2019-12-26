@@ -4,12 +4,12 @@
   "main": "app.js",
   "license": "MIT",
   "dependencies": {
-    "koa": "^2.2.0",
+    "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.0",
     "koa-json": "^2.0.2",
-    "koa-logger": "^3.0.0",
+    "koa-logger": "^3.2.1",
     "koa-router": "^7.3.0",
-    "mongoose": "^4.10.2"
+    "mongoose": "^4.13.19"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
