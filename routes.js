@@ -1,20 +1,16 @@
 'use strict';
 
 const Router = require('koa-router');
+const home = require('./controllers/home');
 const songs = require('./controllers/songs');
 const artists = require('./controllers/artists');
 const lineDistributions = require('./controllers/line-distributions');
 //var linedists = require('./linedists');
 
-// home page
-function index(ctx) {
-  ctx.body = 'Home';
-}
-
 // routes
 var router = new Router();
 router
-  .get('/', index)
+  .get('/', home.index)
 
   .get('/artists', artists.all)
   .get('/artists/:id', artists.fetch)
