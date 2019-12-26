@@ -1,9 +1,9 @@
 ## Usage
 
-Install::
+Install:
 
     $ npm install
 
-To run::
+To run:
 
     $ npx nodemon
