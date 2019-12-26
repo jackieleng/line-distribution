@@ -11,5 +11,7 @@
     "koa-router": "^7.3.0",
     "mongoose": "^4.10.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
 }

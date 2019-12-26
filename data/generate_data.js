@@ -1,3 +1,6 @@
+// TODO: this script doesn't work because `disconnect()` is called
+// asynchronously and will be executed before the DB objects are created.
+// It needs to be wrapped in async or using promises
 'use strict';
 
 var mongoose = require('mongoose');
