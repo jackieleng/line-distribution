@@ -15,10 +15,10 @@ function sumLineDistributions(lines) {
       if (sumDistribs[elm.member] === undefined) {
         sumDistribs[elm.member] = {};
         sumDistribs[elm.member].count = 0;
-        sumDistribs[elm.member].sumPercentage = 0;
+        sumDistribs[elm.member].percentage = 0;
       }
       sumDistribs[elm.member].count++;
-      sumDistribs[elm.member].sumPercentage += elm.percentage;
+      sumDistribs[elm.member].percentage += elm.percentage;
     });
   });
   return sumDistribs;
@@ -36,11 +36,11 @@ function maxLineDistributions(lines) {
       if (memberStats[elm.member] === undefined) {
         memberStats[elm.member] = {};
         memberStats[elm.member].count = 1;
-        memberStats[elm.member].maxPercentage = elm.percentage;
+        memberStats[elm.member].percentage = elm.percentage;
       } else {
         memberStats[elm.member].count++;
-        if (elm.percentage > memberStats[elm.member].maxPercentage) {
-          memberStats[elm.member].maxPercentage = elm.percentage;
+        if (elm.percentage > memberStats[elm.member].percentage) {
+          memberStats[elm.member].percentage = elm.percentage;
         }
       }
     });
@@ -60,11 +60,11 @@ function minLineDistributions(lines) {
       if (memberStats[elm.member] === undefined) {
         memberStats[elm.member] = {};
         memberStats[elm.member].count = 1;
-        memberStats[elm.member].minPercentage = elm.percentage;
+        memberStats[elm.member].percentage = elm.percentage;
       } else {
         memberStats[elm.member].count++;
-        if (elm.percentage < memberStats[elm.member].minPercentage) {
-          memberStats[elm.member].minPercentage = elm.percentage;
+        if (elm.percentage < memberStats[elm.member].percentage) {
+          memberStats[elm.member].percentage = elm.percentage;
         }
       }
     });
@@ -92,8 +92,7 @@ async function lineDistributionByArtist(artistId, stats) {
     case 'avg':
       var sumDistribs = sumLineDistributions(lines);
       Object.entries(sumDistribs).forEach(function([k, v]) {
-        v.averagePercentage = v.sumPercentage / v.count;
-        delete v.sumPercentage;
+        v.percentage = v.percentage / v.count;
       });
       distrib = sumDistribs;
       break;
